@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naari Cycle — Your Cycle Care Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash-screen" class="screen-overlay active">
+  <div class="splash-content">
+    <div class="splash-logo">
+      <div class="logo-bloom">🌸</div>
+      <h1>Naari Cycle</h1>
+      <p>Your Cycle Care Companion</p>
+    </div>
+    <div class="splash-tagline">Track · Understand · Support · Act</div>
+  </div>
+</div>
+
+<!-- LOGIN / SIGNUP SCREEN -->
+<div id="auth-screen" class="screen-overlay">
+  <div class="auth-container">
+    <div class="auth-header">
+      <div class="logo-sm">🌸 Naari Cycle</div>
+      <h2 id="auth-title">Welcome Back</h2>
+      <p id="auth-sub">Sign in to continue your care journey</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuth('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuth('signup')">Create Account</button>
+    </div>
+    <div class="auth-form">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="auth-name" placeholder="e.g. Priya Sharma" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="auth-email" placeholder="priya@email.com" />
+      </div>
+      <div class="form-group" id="auth-password-group">
+        <label>Password</label>
+        <input type="password" id="auth-password" placeholder="Create a password" />
+      </div>
+      <div id="auth-error" class="error-msg"></div>
+      <button class="btn-primary" onclick="handleAuth()">
+        <span id="auth-btn-text">Sign In</span>
+      </button>
+    </div>
+    <p class="auth-footer">Your data is private and secure 🔒</p>
+  </div>
+</div>
+
+<!-- ONBOARDING SCREEN -->
+<div id="onboarding-screen" class="screen-overlay">
+  <div class="onboarding-container">
+    <div class="onboarding-header">
+      <div class="ob-step-bar">
+        <div class="ob-step active" id="step-dot-1"></div>
+        <div class="ob-step" id="step-dot-2"></div>
+        <div class="ob-step" id="step-dot-3"></div>
+      </div>
+      <h2 id="ob-title">Tell us about yourself</h2>
+      <p id="ob-sub">This helps us personalise your experience</p>
+    </div>
+
+    <!-- Step 1: Basic Info -->
+    <div id="ob-step-1" class="ob-step-content active">
+      <div class="form-group">
+        <label>Your Age</label>
+        <input type="number" id="ob-age" placeholder="e.g. 24" min="10" max="60" />
+      </div>
+      <div class="form-group">
+        <label>Preferred Language</label>
+        <div class="lang-chips" id="lang-chips">
+          <div class="lang-chip selected" onclick="selectLang(this)" data-val="English">🇬🇧 English</div>
+          <div class="lang-chip" onclick="selectLang(this)" data-val="Hindi">🇮🇳 हिन्दी</div>
+          <div class="lang-chip" onclick="selectLang(this)" data-val="Kannada">ಕನ್ನಡ</div>
+          <div class="lang-chip" onclick="selectLang(this)" data-val="Tamil">தமிழ்</div>
+          <div class="lang-chip" onclick="selectLang(this)" data-val="Telugu">తెలుగు</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Your Health Goal</label>
+        <div class="goal-chips" id="goal-chips">
+          <div class="goal-chip selected" onclick="selectGoal(this)" data-val="Track cycle">📅 Track my cycle</div>
+          <div class="goal-chip" onclick="selectGoal(this)" data-val="Manage PCOS">🔬 Manage PCOS</div>
+          <div class="goal-chip" onclick="selectGoal(this)" data-val="Reduce pain">💊 Reduce pain</div>
+          <div class="goal-chip" onclick="selectGoal(this)" data-val="Emotional support">💜 Emotional support</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Cycle Info -->
+    <div id="ob-step-2" class="ob-step-content">
+      <div class="form-group">
+        <label>Last Period Start Date</label>
+        <input type="date" id="ob-last-period" />
+      </div>
+      <div class="form-group">
+        <label>Average Cycle Length <span class="hint">(days between periods)</span></label>
+        <div class="cycle-length-row">
+          <button class="cycle-adj" onclick="adjustCycle(-1)">−</button>
+          <div class="cycle-val-box"><span id="cycle-len-val">28</span><small>days</small></div>
+          <button class="cycle-adj" onclick="adjustCycle(1)">+</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Average Period Duration</label>
+        <div class="cycle-length-row">
+          <button class="cycle-adj" onclick="adjustDuration(-1)">−</button>
+          <div class="cycle-val-box"><span id="period-dur-val">5</span><small>days</small></div>
+          <button class="cycle-adj" onclick="adjustDuration(1)">+</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Health Profile -->
+    <div id="ob-step-3" class="ob-step-content">
+      <div class="form-group">
+        <label>Do you have any of these? <span class="hint">(select all that apply)</span></label>
+        <div class="condition-grid" id="condition-grid">
+          <div class="cond-chip" onclick="toggleCond(this)" data-val="PCOS">🔬 PCOS</div>
+          <div class="cond-chip" onclick="toggleCond(this)" data-val="Thyroid">🦋 Thyroid issues</div>
+          <div class="cond-chip" onclick="toggleCond(this)" data-val="Endometriosis">🩸 Endometriosis</div>
+          <div class="cond-chip" onclick="toggleCond(this)" data-val="Anemia">💉 Anemia</div>
+          <div class="cond-chip" onclick="toggleCond(this)" data-val="None">✅ None of these</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Typical stress level in life</label>
+        <div class="stress-scale">
+          <input type="range" min="1" max="10" value="5" id="ob-stress" oninput="updateStressLabel(this.value)">
+          <div class="stress-labels">
+            <span>Very low</span>
+            <span id="stress-val-label">Moderate (5)</span>
+            <span>Very high</span>
+          </div>
+        </div>
+      </div>
+      <div class="ob-complete-msg">
+        <div class="ob-flower">🌸</div>
+        <p>You're all set! Your personalised cycle companion is ready.</p>
+      </div>
+    </div>
+
+    <div class="ob-nav">
+      <button class="btn-outline" id="ob-back-btn" onclick="obBack()" style="display:none;">Back</button>
+      <button class="btn-primary" id="ob-next-btn" onclick="obNext()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="hidden">
+
+  <!-- TOP NAVBAR -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="hamburger" onclick="toggleSidebar()">☰</div>
+      <div class="header-brand">🌸 Naari Cycle</div>
+    </div>
+    <div class="header-right">
+      <div class="lang-toggle" onclick="showLangPicker()">🌐 <span id="curr-lang">EN</span></div>
+      <div class="user-avatar" id="user-avatar-header" onclick="showSection('profile')">P</div>
+    </div>
+  </header>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div class="sb-avatar" id="sb-avatar">P</div>
+      <div class="sb-name" id="sb-name">User</div>
+      <div class="sb-email" id="sb-email">user@email.com</div>
+    </div>
+    <nav class="sb-nav">
+      <a class="sb-link active" onclick="showSection('home')" data-section="home">🏠 Home</a>
+      <a class="sb-link" onclick="showSection('tracker')" data-section="tracker">📅 Tracker</a>
+      <a class="sb-link" onclick="showSection('insights')" data-section="insights">✨ Insights</a>
+      <a class="sb-link" onclick="showSection('companion')" data-section="companion">💜 Companion</a>
+      <a class="sb-link" onclick="showSection('care')" data-section="care">🩺 Care</a>
+      <a class="sb-link" onclick="showSection('awareness')" data-section="awareness">📚 Awareness</a>
+      <a class="sb-link" onclick="showSection('calendar')" data-section="calendar">🗓️ Calendar</a>
+      <a class="sb-link" onclick="showSection('profile')" data-section="profile">👤 Profile</a>
+    </nav>
+    <button class="sb-logout" onclick="logout()">Sign Out</button>
+  </div>
+  <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <nav class="bottom-nav">
+    <button class="bn-item active" onclick="showSection('home')" data-section="home">
+      <span class="bn-icon">🏠</span><span class="bn-label">Home</span>
+    </button>
+    <button class="bn-item" onclick="showSection('tracker')" data-section="tracker">
+      <span class="bn-icon">📅</span><span class="bn-label">Tracker</span>
+    </button>
+    <button class="bn-item" onclick="showSection('insights')" data-section="insights">
+      <span class="bn-icon">✨</span><span class="bn-label">Insights</span>
+    </button>
+    <button class="bn-item" onclick="showSection('companion')" data-section="companion">
+      <span class="bn-icon">💜</span><span class="bn-label">Companion</span>
+    </button>
+    <button class="bn-item" onclick="showSection('care')" data-section="care">
+      <span class="bn-icon">🩺</span><span class="bn-label">Care</span>
+    </button>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="app-main">
+
+    <!-- ===== HOME SECTION ===== -->
+    <section id="section-home" class="app-section active">
+      <div class="section-inner">
+        <!-- Alerts Banner -->
+        <div id="alerts-banner" class="alerts-banner"></div>
+
+        <!-- Greeting Card -->
+        <div class="greeting-card">
+          <div class="greeting-left">
+            <div class="greeting-text" id="greeting-text">Good morning,</div>
+            <div class="greeting-name" id="greeting-name">Sakhi 🌸</div>
+            <div class="greeting-phase" id="greeting-phase">Menstrual Phase</div>
+          </div>
+          <div class="greeting-right">
+            <div class="cycle-day-badge">
+              <div class="cycle-day-num" id="cycle-day-num">–</div>
+              <div class="cycle-day-label">Day of Cycle</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Period Card -->
+        <div class="next-period-card">
+          <div class="np-icon">📅</div>
+          <div class="np-info">
+            <div class="np-label">Next Period</div>
+            <div class="np-date" id="next-period-date">Calculating...</div>
+          </div>
+          <div class="np-badge" id="np-days-badge">– days</div>
+        </div>
+
+        <!-- Phase Bar -->
+        <div class="phase-card card">
+          <div class="card-label">Cycle Phase Progress</div>
+          <div class="phase-track">
+            <div class="phase-fill" id="phase-fill-bar"></div>
+          </div>
+          <div class="phase-labels">
+            <span>Menstrual</span><span>Follicular</span><span>Ovulation</span><span>Luteal</span>
+          </div>
+          <div class="phase-note" id="phase-note">Loading...</div>
+        </div>
+
+        <!-- Mood Check-in -->
+        <div class="card" id="home-mood-card">
+          <div class="card-label">How do you feel today?</div>
+          <div class="mood-row" id="home-mood-row">
+            <div class="mood-chip" onclick="selectHomeMood(this,'Happy')"><span class="mc-icon">😊</span><span class="mc-label">Happy</span></div>
+            <div class="mood-chip" onclick="selectHomeMood(this,'Okay')"><span class="mc-icon">😐</span><span class="mc-label">Okay</span></div>
+            <div class="mood-chip" onclick="selectHomeMood(this,'Low')"><span class="mc-icon">😔</span><span class="mc-label">Low</span></div>
+            <div class="mood-chip" onclick="selectHomeMood(this,'Anxious')"><span class="mc-icon">😟</span><span class="mc-label">Anxious</span></div>
+            <div class="mood-chip" onclick="selectHomeMood(this,'Irritable')"><span class="mc-icon">😡</span><span class="mc-label">Irritable</span></div>
+          </div>
+          <div class="energy-section">
+            <div class="energy-header">
+              <span>Energy level</span>
+              <span id="energy-label" class="energy-val">Moderate</span>
+            </div>
+            <input type="range" min="1" max="10" value="5" id="home-energy" oninput="updateHomeEnergy(this.value)" class="energy-slider">
+          </div>
+        </div>
+
+        <!-- Today's Insight -->
+        <div class="insight-banner" id="home-insight">
+          <div class="ib-icon">💡</div>
+          <div class="ib-text" id="insight-text">Loading insight...</div>
+        </div>
+
+        <!-- Action Tips -->
+        <div class="card">
+          <div class="card-label">Your care tips today</div>
+          <div class="action-chips" id="action-chips"></div>
+        </div>
+
+        <!-- Mini Stats -->
+        <div class="mini-stats-row" id="mini-stats-row">
+          <div class="mini-stat-card">
+            <div class="ms-icon">😴</div>
+            <div class="ms-val" id="ms-sleep">–</div>
+            <div class="ms-label">Sleep (hrs)</div>
+          </div>
+          <div class="mini-stat-card">
+            <div class="ms-icon">💧</div>
+            <div class="ms-val" id="ms-water">–</div>
+            <div class="ms-label">Water</div>
+          </div>
+          <div class="mini-stat-card">
+            <div class="ms-icon">🧘</div>
+            <div class="ms-val" id="ms-stress">–</div>
+            <div class="ms-label">Stress</div>
+          </div>
+          <div class="mini-stat-card">
+            <div class="ms-icon">🩸</div>
+            <div class="ms-val" id="ms-flow">–</div>
+            <div class="ms-label">Flow</div>
+          </div>
+        </div>
+
+        <div class="quick-actions">
+          <button class="qa-btn" onclick="showSection('tracker')">📝 Log Today</button>
+          <button class="qa-btn" onclick="showSection('companion')">💜 Talk to Companion</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TRACKER SECTION ===== -->
+    <section id="section-tracker" class="app-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>Daily Tracker</h2>
+          <div class="section-date" id="tracker-date"></div>
+        </div>
+
+        <!-- Period Start Toggle -->
+        <div class="card tracker-toggle-card">
+          <div class="toggle-row-item">
+            <div>
+              <div class="tt-title">Period started today?</div>
+              <div class="tt-sub">Tap to log period start</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="period-toggle" onchange="togglePeriodStart()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Flow -->
+        <div class="card">
+          <div class="card-label">Flow Intensity</div>
+          <div class="flow-btns" id="flow-btns">
+            <button class="flow-btn" onclick="selectFlow(this,'None')">⬜ None</button>
+            <button class="flow-btn" onclick="selectFlow(this,'Spotting')">🔴 Spotting</button>
+            <button class="flow-btn" onclick="selectFlow(this,'Light')">🩸 Light</button>
+            <button class="flow-btn" onclick="selectFlow(this,'Medium')">🩸🩸 Medium</button>
+            <button class="flow-btn" onclick="selectFlow(this,'Heavy')">🩸🩸🩸 Heavy</button>
+          </div>
+        </div>
+
+        <!-- Pain -->
+        <div class="card">
+          <div class="card-label">Pain Level <span id="pain-val-display" class="val-badge">0</span></div>
+          <input type="range" min="0" max="10" value="0" id="pain-slider" oninput="updatePainDisplay(this.value)" class="full-slider">
+          <div class="slider-labels"><span>No pain</span><span>Unbearable</span></div>
+        </div>
+
+        <!-- Symptoms -->
+        <div class="card">
+          <div class="card-label">Symptoms Today</div>
+          <div class="symptom-grid" id="symptom-grid">
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Cramps">Cramps</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Headache">Headache</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Fatigue">Fatigue</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Bloating">Bloating</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Acne">Acne</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Cravings">Cravings</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Nausea">Nausea</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Back pain">Back pain</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Breast tenderness">Breast tenderness</div>
+            <div class="s-chip" onclick="toggleChip(this)" data-val="Mood swings">Mood swings</div>
+          </div>
+        </div>
+
+        <!-- Mood -->
+        <div class="card">
+          <div class="card-label">Mood</div>
+          <div class="mood-row" id="tracker-mood-row">
+            <div class="mood-chip" onclick="selectTrackerMood(this,'Happy')"><span class="mc-icon">😊</span><span class="mc-label">Happy</span></div>
+            <div class="mood-chip" onclick="selectTrackerMood(this,'Okay')"><span class="mc-icon">😐</span><span class="mc-label">Okay</span></div>
+            <div class="mood-chip" onclick="selectTrackerMood(this,'Low')"><span class="mc-icon">😔</span><span class="mc-label">Low</span></div>
+            <div class="mood-chip" onclick="selectTrackerMood(this,'Anxious')"><span class="mc-icon">😟</span><span class="mc-label">Anxious</span></div>
+            <div class="mood-chip" onclick="selectTrackerMood(this,'Irritable')"><span class="mc-icon">😡</span><span class="mc-label">Irritable</span></div>
+          </div>
+        </div>
+
+        <!-- Energy -->
+        <div class="card">
+          <div class="card-label">Energy Level <span id="energy-val-display" class="val-badge">5</span></div>
+          <input type="range" min="1" max="10" value="5" id="energy-slider" oninput="updateEnergyDisplay(this.value)" class="full-slider">
+          <div class="slider-labels"><span>Very low</span><span>Very high</span></div>
+        </div>
+
+        <!-- Lifestyle -->
+        <div class="card">
+          <div class="card-label">Lifestyle Signals</div>
+          <div class="lifestyle-grid">
+            <div class="ls-item">
+              <label>😴 Sleep (hrs)</label>
+              <input type="range" min="3" max="12" step="0.5" value="7" id="sleep-tracker" oninput="document.getElementById('sleep-display').textContent=parseFloat(this.value).toFixed(1)">
+              <span class="ls-val" id="sleep-display">7.0</span>
+            </div>
+            <div class="ls-item">
+              <label>💧 Water (glasses)</label>
+              <input type="range" min="1" max="12" value="6" id="water-tracker" oninput="document.getElementById('water-display').textContent=this.value">
+              <span class="ls-val" id="water-display">6</span>
+            </div>
+            <div class="ls-item">
+              <label>🧘 Stress (1–10)</label>
+              <input type="range" min="1" max="10" value="5" id="stress-tracker" oninput="document.getElementById('stress-display').textContent=this.value">
+              <span class="ls-val" id="stress-display">5</span>
+            </div>
+            <div class="ls-item">
+              <label>🏃 Activity</label>
+              <div class="flow-btns small">
+                <button class="flow-btn" onclick="selectActivity(this,'None')">None</button>
+                <button class="flow-btn" onclick="selectActivity(this,'Walk')">Walk</button>
+                <button class="flow-btn" onclick="selectActivity(this,'Exercise')">Exercise</button>
+                <button class="flow-btn" onclick="selectActivity(this,'Yoga')">Yoga</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Productivity Impact -->
+        <div class="card">
+          <div class="card-label">Productivity Impact Today</div>
+          <div class="prod-grid" id="prod-grid">
+            <div class="prod-chip" onclick="toggleChip(this)" data-val="Low focus">📉 Low focus</div>
+            <div class="prod-chip" onclick="toggleChip(this)" data-val="Skipped work/class">🏠 Skipped work/class</div>
+            <div class="prod-chip" onclick="toggleChip(this)" data-val="Low energy">🔋 Low energy</div>
+            <div class="prod-chip" onclick="toggleChip(this)" data-val="Social withdrawal">🚪 Social withdrawal</div>
+          </div>
+        </div>
+
+        <button class="btn-primary full-btn" onclick="saveTrackerLog()">💾 Save Today's Log</button>
+        <div id="tracker-saved-msg" class="success-msg hidden">✅ Log saved successfully!</div>
+      </div>
+    </section>
+
+    <!-- ===== INSIGHTS SECTION ===== -->
+    <section id="section-insights" class="app-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>Your Insights</h2>
+          <p>Based on your logged data</p>
+        </div>
+
+        <div id="insights-content"></div>
+
+        <div class="card">
+          <div class="card-label">Cycle Length Trend</div>
+          <div class="trend-chart" id="trend-chart"></div>
+          <div class="chart-legend">
+            <span class="cl-dot" style="background:var(--plum)"></span> Normal &nbsp;
+            <span class="cl-dot" style="background:var(--rose)"></span> Irregular
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Mood Pattern (Last 7 Days)</div>
+          <div class="mood-history" id="mood-history"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Pain History</div>
+          <div class="pain-history" id="pain-history"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">What to do next</div>
+          <div class="reco-list" id="reco-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== COMPANION SECTION ===== -->
+    <section id="section-companion" class="app-section">
+      <div class="section-inner companion-layout">
+        <div class="companion-header">
+          <div class="comp-avatar">🌸</div>
+          <div class="comp-info">
+            <div class="comp-name">Naari Companion</div>
+            <div class="comp-status">💚 Safe & Private</div>
+          </div>
+        </div>
+
+        <div class="chat-window" id="chat-window">
+          <!-- Messages injected here -->
+        </div>
+
+        <div class="quick-feels">
+          <div class="qf-label">I feel...</div>
+          <div class="qf-chips">
+            <button class="qf-chip" onclick="sendFeel('I feel stressed today 😰')">😰 Stressed</button>
+            <button class="qf-chip" onclick="sendFeel('My cramps are very bad 😣')">😣 Bad cramps</button>
+            <button class="qf-chip" onclick="sendFeel('I feel anxious 😟')">😟 Anxious</button>
+            <button class="qf-chip" onclick="sendFeel('I cannot focus today 😶')">😶 Unfocused</button>
+            <button class="qf-chip" onclick="sendFeel('I feel very low today 😔')">😔 Very low</button>
+            <button class="qf-chip" onclick="sendFeel('I need motivation 💪')">💪 Need motivation</button>
+          </div>
+        </div>
+
+        <div class="chat-input-area">
+          <input type="text" id="chat-input" placeholder="Type how you feel..." onkeypress="if(event.key==='Enter') sendChat()" />
+          <button class="send-btn" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CARE SECTION ===== -->
+    <section id="section-care" class="app-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>Care Hub</h2>
+          <p>From awareness to action</p>
+        </div>
+
+        <button class="report-btn" onclick="exportReport()">
+          📄 Export Health Report
+        </button>
+
+        <div class="care-section-group">
+          <div class="care-group-title">🩺 Doctor Connect</div>
+          <div class="care-card-item" onclick="showDoctorModal()">
+            <div class="cci-icon" style="background:#FFE8F5;">👩‍⚕️</div>
+            <div class="cci-info"><div class="cci-name">Consult a Gynaecologist</div><div class="cci-sub">Get help for irregular cycles, PCOS, pain</div></div>
+            <div class="cci-arrow">›</div>
+          </div>
+          <div class="care-card-item" onclick="showSymptomSummary()">
+            <div class="cci-icon" style="background:#E8F5FF;">📋</div>
+            <div class="cci-info"><div class="cci-name">Symptom Summary</div><div class="cci-sub">Auto-generated, doctor-ready report</div></div>
+            <div class="cci-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="care-section-group">
+          <div class="care-group-title">🌸 Community Support</div>
+          <div class="care-card-item" onclick="showCommunity()">
+            <div class="cci-icon" style="background:#F6EFFA;">🤝</div>
+            <div class="cci-info"><div class="cci-name">Women's Support Space</div><div class="cci-sub">Anonymous · Moderated · Safe to share</div></div>
+            <div class="cci-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="care-section-group">
+          <div class="care-group-title">📱 Period Reminders</div>
+          <div class="reminders-box" id="reminders-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== AWARENESS SECTION ===== -->
+    <section id="section-awareness" class="app-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>Awareness & Learn</h2>
+          <p>Know your body, own your health</p>
+        </div>
+
+        <div class="awareness-tabs">
+          <button class="aw-tab active" onclick="switchAwareness('pcos', this)">PCOS</button>
+          <button class="aw-tab" onclick="switchAwareness('tips', this)">Health Tips</button>
+          <button class="aw-tab" onclick="switchAwareness('myths', this)">Myths vs Facts</button>
+          <button class="aw-tab" onclick="switchAwareness('food', this)">Indian Foods</button>
+          <button class="aw-tab" onclick="switchAwareness('hormones', this)">Hormones</button>
+        </div>
+
+        <div id="aw-pcos" class="aw-content active">
+          <div class="aw-hero">
+            <div class="aw-hero-icon">🔬</div>
+            <h3>Understanding PCOS</h3>
+            <p>Polycystic Ovary Syndrome affects 1 in 5 Indian women. It is manageable.</p>
+          </div>
+          <div class="info-card"><div class="ic-title">What is PCOS?</div><p>PCOS is a hormonal disorder where the ovaries produce excess male hormones (androgens). This can cause irregular periods, small cysts on ovaries, weight gain, acne, and excess hair growth.</p></div>
+          <div class="info-card"><div class="ic-title">Common Symptoms</div><ul class="info-list"><li>Irregular or missed periods</li><li>Weight gain, especially around the waist</li><li>Acne and oily skin</li><li>Excess facial/body hair</li><li>Thinning scalp hair</li><li>Difficulty getting pregnant</li></ul></div>
+          <div class="info-card"><div class="ic-title">What You Can Do</div><ul class="info-list"><li>Maintain a healthy weight through diet and exercise</li><li>Limit sugar and processed foods</li><li>Exercise regularly — even a 30-minute walk helps</li><li>Manage stress through yoga or meditation</li><li>Consult a gynaecologist for proper diagnosis</li></ul></div>
+          <div class="info-card warning-card"><div class="ic-title">⚠️ When to See a Doctor</div><p>If your cycle is consistently irregular (less than 21 or more than 35 days), you experience severe pain, or you have been trying to conceive for over 6 months.</p></div>
+        </div>
+
+        <div id="aw-tips" class="aw-content">
+          <div class="aw-hero"><div class="aw-hero-icon">💚</div><h3>Period Health Tips</h3><p>Small habits, big difference</p></div>
+          <div class="tips-grid">
+            <div class="tip-card"><div class="tip-icon">🍃</div><div class="tip-title">Eat iron-rich foods</div><p>Spinach, lentils, dates, and jaggery help replenish iron lost during menstruation.</p></div>
+            <div class="tip-card"><div class="tip-icon">💧</div><div class="tip-title">Stay hydrated</div><p>Drink at least 8 glasses of water daily. Herbal teas like ginger or chamomile help with cramps.</p></div>
+            <div class="tip-card"><div class="tip-icon">😴</div><div class="tip-title">Prioritise sleep</div><p>7–9 hours of sleep regulates hormones and reduces mood swings and fatigue.</p></div>
+            <div class="tip-card"><div class="tip-icon">🧘</div><div class="tip-title">Gentle movement</div><p>Light yoga, walking, or stretching can reduce cramps and improve blood flow during your period.</p></div>
+            <div class="tip-card"><div class="tip-icon">🚫</div><div class="tip-title">Avoid these</div><p>Reduce caffeine, alcohol, salty snacks, and cold drinks during your period — they can worsen bloating and cramps.</p></div>
+            <div class="tip-card"><div class="tip-icon">🌡️</div><div class="tip-title">Heat therapy</div><p>A warm compress or heating pad on your lower abdomen for 15–20 minutes can significantly reduce cramp intensity.</p></div>
+          </div>
+        </div>
+
+        <div id="aw-myths" class="aw-content">
+          <div class="aw-hero"><div class="aw-hero-icon">💬</div><h3>Myths vs Facts</h3><p>Know what's true about your cycle</p></div>
+          <div class="myth-list">
+            <div class="myth-item"><div class="myth-tag myth">MYTH</div><p>You should not exercise during your period.</p><div class="fact-tag">FACT</div><p class="fact-text">Light exercise like yoga and walking actually helps reduce cramps and improves mood. Avoid only high-intensity workouts if you feel weak.</p></div>
+            <div class="myth-item"><div class="myth-tag myth">MYTH</div><p>Irregular periods are always a sign of something serious.</p><div class="fact-tag">FACT</div><p class="fact-text">Occasional irregularity is common and can be caused by stress, travel, or diet changes. Persistent irregularity should be checked by a doctor.</p></div>
+            <div class="myth-item"><div class="myth-tag myth">MYTH</div><p>Period blood is dirty or impure.</p><div class="fact-tag">FACT</div><p class="fact-text">Period blood is a mix of blood, uterine lining, and cervical mucus. It is a natural bodily process — there is nothing dirty about it.</p></div>
+            <div class="myth-item"><div class="myth-tag myth">MYTH</div><p>You can't get pregnant during your period.</p><div class="fact-tag">FACT</div><p class="fact-text">While less likely, pregnancy during menstruation is possible, especially with shorter cycles. Sperm can survive inside the body for up to 5 days.</p></div>
+            <div class="myth-item"><div class="myth-tag myth">MYTH</div><p>Painful periods are normal and you just have to bear it.</p><div class="fact-tag">FACT</div><p class="fact-text">Mild discomfort is common, but severe pain is not normal. Conditions like endometriosis and fibroids can cause intense pain and should be diagnosed.</p></div>
+          </div>
+        </div>
+
+        <div id="aw-food" class="aw-content">
+          <div class="aw-hero"><div class="aw-hero-icon">🍛</div><h3>Indian Foods for Cycle Health</h3><p>Your kitchen is your medicine cabinet</p></div>
+          <div class="food-grid">
+            <div class="food-card"><div class="fc-icon">🌿</div><div class="fc-name">Methi (Fenugreek)</div><p>Reduces menstrual cramps and regulates blood sugar — helpful for PCOS.</p></div>
+            <div class="food-card"><div class="fc-icon">🧡</div><div class="fc-name">Haldi (Turmeric)</div><p>Anti-inflammatory properties reduce bloating and pain. Best in warm milk.</p></div>
+            <div class="food-card"><div class="fc-icon">🫚</div><div class="fc-name">Til (Sesame seeds)</div><p>Rich in iron and calcium. Til ke ladoo before periods helps build strength.</p></div>
+            <div class="food-card"><div class="fc-icon">🟫</div><div class="fc-name">Jaggery (Gur)</div><p>Natural iron source that replenishes blood loss. Better than refined sugar.</p></div>
+            <div class="food-card"><div class="fc-icon">🍃</div><div class="fc-name">Spinach (Palak)</div><p>High in iron, magnesium, and folate — essential during and after menstruation.</p></div>
+            <div class="food-card"><div class="fc-icon">🫘</div><div class="fc-name">Dal (Lentils)</div><p>Protein and iron-rich. Masoor dal and moong dal are excellent choices daily.</p></div>
+            <div class="food-card"><div class="fc-icon">🥥</div><div class="fc-name">Coconut water</div><p>Natural electrolytes that reduce bloating, headaches, and fatigue during period.</p></div>
+            <div class="food-card"><div class="fc-icon">🫚</div><div class="fc-name">Ajwain (Carom seeds)</div><p>Warm ajwain water relieves period cramps quickly — a trusted home remedy.</p></div>
+          </div>
+        </div>
+
+        <div id="aw-hormones" class="aw-content">
+          <div class="aw-hero"><div class="aw-hero-icon">🧠</div><h3>Hormones & Your Mood</h3><p>Understanding why you feel what you feel</p></div>
+          <div class="hormone-timeline">
+            <div class="ht-phase">
+              <div class="ht-dot" style="background:var(--rose)"></div>
+              <div class="ht-info">
+                <div class="ht-name">Menstrual (Day 1–5)</div>
+                <p>Estrogen and progesterone are at their lowest. You may feel tired, emotional, and have low energy. This is completely normal — rest and nourish yourself.</p>
+              </div>
+            </div>
+            <div class="ht-phase">
+              <div class="ht-dot" style="background:var(--teal)"></div>
+              <div class="ht-info">
+                <div class="ht-name">Follicular (Day 6–13)</div>
+                <p>Estrogen rises. Energy returns, mood improves, and you feel more motivated and social. A great time for new projects and challenges.</p>
+              </div>
+            </div>
+            <div class="ht-phase">
+              <div class="ht-dot" style="background:#F4C842"></div>
+              <div class="ht-info">
+                <div class="ht-name">Ovulation (Day 14–17)</div>
+                <p>Estrogen peaks, then LH surges. You feel your most confident and social. Energy is highest. Some women feel mild mid-cycle pain (mittelschmerz).</p>
+              </div>
+            </div>
+            <div class="ht-phase">
+              <div class="ht-dot" style="background:var(--plum)"></div>
+              <div class="ht-info">
+                <div class="ht-name">Luteal (Day 18–28)</div>
+                <p>Progesterone rises, then falls. PMS symptoms — bloating, mood swings, cravings, and irritability — can occur in the last few days. Self-care is especially important now.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CALENDAR SECTION ===== -->
+    <section id="section-calendar" class="app-section">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2>Cycle Calendar</h2>
+          <div class="cal-nav">
+            <button onclick="changeMonth(-1)">‹</button>
+            <span id="cal-month-label">March 2025</span>
+            <button onclick="changeMonth(1)">›</button>
+          </div>
+        </div>
+
+        <div class="calendar-legend">
+          <span><span class="cl-dot" style="background:var(--rose)"></span> Period</span>
+          <span><span class="cl-dot" style="background:var(--teal)"></span> Fertile</span>
+          <span><span class="cl-dot" style="background:#F4C842"></span> Ovulation</span>
+          <span><span class="cl-dot" style="background:var(--lavender-dark)"></span> Predicted</span>
+        </div>
+
+        <div class="calendar-grid-wrap">
+          <div class="cal-weekdays">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+
+        <div class="cal-day-detail card" id="cal-day-detail" style="display:none;">
+          <div class="card-label" id="cal-detail-date">Selected Day</div>
+          <div id="cal-detail-content"></div>
+        </div>
+
+        <div class="calendar-key">
+          <div class="ck-item"><strong>Period days</strong> — Logged menstruation days</div>
+          <div class="ck-item"><strong>Fertile window</strong> — Higher chance of conception (approx)</div>
+          <div class="ck-item"><strong>Predicted</strong> — Estimated next period based on your cycle</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROFILE SECTION ===== -->
+    <section id="section-profile" class="app-section">
+      <div class="section-inner">
+        <div class="section-header"><h2>Your Profile</h2></div>
+
+        <div class="profile-card card">
+          <div class="profile-avatar-lg" id="profile-avatar-lg">P</div>
+          <div class="profile-name-lg" id="profile-name-lg">User Name</div>
+          <div class="profile-email-lg" id="profile-email-lg">user@email.com</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Health Profile</div>
+          <div class="profile-info-grid" id="profile-info-grid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Edit Your Details</div>
+          <div class="form-group"><label>Cycle Length (days)</label><input type="number" id="edit-cycle" min="20" max="60" /></div>
+          <div class="form-group"><label>Period Duration (days)</label><input type="number" id="edit-duration" min="1" max="10" /></div>
+          <div class="form-group"><label>Last Period Date</label><input type="date" id="edit-last-period" /></div>
+          <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
+          <div id="profile-saved-msg" class="success-msg hidden">✅ Profile updated!</div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Data Management</div>
+          <button class="btn-outline" onclick="exportData()">📥 Export All My Data (CSV)</button>
+          <button class="btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+        </div>
+
+        <button class="sb-logout" style="width:100%; margin-top:12px;" onclick="logout()">Sign Out</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- LANGUAGE PICKER MODAL -->
+<div id="lang-picker-modal" class="lang-picker-overlay hidden" onclick="closeLangPicker()">
+  <div class="lang-picker-box" onclick="event.stopPropagation()">
+    <div class="lp-header">
+      <div class="lp-title">🌐 Choose Your Language</div>
+      <div class="lp-sub">Select the language for the full app experience</div>
+    </div>
+    <div class="lp-options">
+      <button class="lp-option" onclick="selectLangApp('en')">
+        <span class="lp-flag">🇬🇧</span>
+        <div class="lp-info"><div class="lp-name">English</div><div class="lp-native">English</div></div>
+        <span class="lp-check" id="lp-check-en">✓</span>
+      </button>
+      <button class="lp-option" onclick="selectLangApp('hi')">
+        <span class="lp-flag">🇮🇳</span>
+        <div class="lp-info"><div class="lp-name">Hindi</div><div class="lp-native">हिन्दी</div></div>
+        <span class="lp-check hidden" id="lp-check-hi">✓</span>
+      </button>
+      <button class="lp-option" onclick="selectLangApp('ml')">
+        <span class="lp-flag">🌴</span>
+        <div class="lp-info"><div class="lp-name">Malayalam</div><div class="lp-native">മലയാളം</div></div>
+        <span class="lp-check hidden" id="lp-check-ml">✓</span>
+      </button>
+      <button class="lp-option" onclick="selectLangApp('kn')">
+        <span class="lp-flag">🌟</span>
+        <div class="lp-info"><div class="lp-name">Kannada</div><div class="lp-native">ಕನ್ನಡ</div></div>
+        <span class="lp-check hidden" id="lp-check-kn">✓</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="db.js"></script>
+<script src="translations.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
