@@ -63,57 +63,42 @@
         <div class="ob-step active" id="step-dot-1"></div>
         <div class="ob-step" id="step-dot-2"></div>
         <div class="ob-step" id="step-dot-3"></div>
-        <div class="ob-step" id="step-dot-4"></div>
-        <div class="ob-step" id="step-dot-5"></div>
-        <div class="ob-step" id="step-dot-6"></div>
       </div>
-      <h2 id="ob-title">What should we call you? 🌸</h2>
-      <p id="ob-sub">Your cycle buddy should know your name, right?</p>
+      <h2 id="ob-title">Tell us about yourself</h2>
+      <p id="ob-sub">This helps us personalise your experience</p>
     </div>
 
-    <!-- Step 1: Name, Language, Age Group -->
+    <!-- Step 1: Basic Info -->
     <div id="ob-step-1" class="ob-step-content active">
       <div class="form-group">
-        <label>Which language feels most comfortable?</label>
-        <p class="ob-hint-text">Let's keep this easy and familiar for you.</p>
+        <label>Your Age</label>
+        <input type="number" id="ob-age" placeholder="e.g. 24" min="10" max="60" />
+      </div>
+      <div class="form-group">
+        <label>Preferred Language</label>
         <div class="lang-chips" id="lang-chips">
           <div class="lang-chip selected" onclick="selectLang(this)" data-val="English">🇬🇧 English</div>
           <div class="lang-chip" onclick="selectLang(this)" data-val="Hindi">🇮🇳 हिन्दी</div>
           <div class="lang-chip" onclick="selectLang(this)" data-val="Kannada">ಕನ್ನಡ</div>
           <div class="lang-chip" onclick="selectLang(this)" data-val="Tamil">தமிழ்</div>
           <div class="lang-chip" onclick="selectLang(this)" data-val="Telugu">తెలుగు</div>
-          <div class="lang-chip" onclick="selectLang(this)" data-val="Malayalam">മലയാളം</div>
         </div>
       </div>
       <div class="form-group">
-        <label>Which age group are you in?</label>
-        <p class="ob-hint-text">This helps us make tips feel more relevant for your life stage.</p>
-        <div class="ob-option-grid" id="age-group-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'age-group-chips','obAgeGroup')" data-val="Under 18">Under 18</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'age-group-chips','obAgeGroup')" data-val="18–24">18–24</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'age-group-chips','obAgeGroup')" data-val="25–34">25–34</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'age-group-chips','obAgeGroup')" data-val="35–40">35–40</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'age-group-chips','obAgeGroup')" data-val="40–45">40–45</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'age-group-chips','obAgeGroup')" data-val="45+">45+</div>
+        <label>Your Health Goal</label>
+        <div class="goal-chips" id="goal-chips">
+          <div class="goal-chip selected" onclick="selectGoal(this)" data-val="Track cycle">📅 Track my cycle</div>
+          <div class="goal-chip" onclick="selectGoal(this)" data-val="Manage PCOS">🔬 Manage PCOS</div>
+          <div class="goal-chip" onclick="selectGoal(this)" data-val="Reduce pain">💊 Reduce pain</div>
+          <div class="goal-chip" onclick="selectGoal(this)" data-val="Emotional support">💜 Emotional support</div>
         </div>
       </div>
     </div>
 
-    <!-- Step 2: Period Regularity + Last Period Date -->
+    <!-- Step 2: Cycle Info -->
     <div id="ob-step-2" class="ob-step-content">
       <div class="form-group">
-        <label>How do your periods usually arrive?</label>
-        <p class="ob-hint-text">On time like that one strict teacher… or totally surprise entry?</p>
-        <div class="ob-option-grid" id="regularity-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'regularity-chips','obRegularity')" data-val="Mostly on time">🕐 Mostly on time</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'regularity-chips','obRegularity')" data-val="Early or late sometimes">📆 Early or late sometimes</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'regularity-chips','obRegularity')" data-val="Very unpredictable">🎲 Very unpredictable</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'regularity-chips','obRegularity')" data-val="Not sure">🤷 I'm not sure</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>When was your last period?</label>
-        <p class="ob-hint-text">Just the last one — we'll handle the rest together.</p>
+        <label>Last Period Start Date</label>
         <input type="date" id="ob-last-period" />
       </div>
       <div class="form-group">
@@ -134,61 +119,10 @@
       </div>
     </div>
 
-    <!-- Step 3: Main Troubles -->
+    <!-- Step 3: Health Profile -->
     <div id="ob-step-3" class="ob-step-content">
       <div class="form-group">
-        <label>What usually troubles you the most?</label>
-        <p class="ob-hint-text">Pick what makes you go <em>uff</em>. 😮‍💨</p>
-        <div class="condition-grid" id="troubles-grid">
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Cramps">😣 Cramps</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Mood swings">🌪️ Mood swings</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Heavy flow">🩸 Heavy flow</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Acne">✨ Acne</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Tiredness">😴 Tiredness</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Headache">🤕 Headache</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Bloating">🫃 Bloating</div>
-          <div class="cond-chip" onclick="toggleMultiChip(this,'obTroubles')" data-val="Irregular periods">📅 Irregular periods</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>How painful are your periods usually?</label>
-        <p class="ob-hint-text">Little discomfort or full drama? 🎭</p>
-        <div class="ob-option-grid" id="pain-level-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'pain-level-chips','obPainLevel')" data-val="Very mild">😊 Very mild</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'pain-level-chips','obPainLevel')" data-val="Manageable">😐 Manageable</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'pain-level-chips','obPainLevel')" data-val="Quite painful">😣 Quite painful</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'pain-level-chips','obPainLevel')" data-val="Very painful">😭 Very painful</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Step 4: Sleep & Stress -->
-    <div id="ob-step-4" class="ob-step-content">
-      <div class="form-group">
-        <label>How have sleep and stress been lately?</label>
-        <p class="ob-hint-text">Be honest — proper sleep or late-night phone scrolling? 📱</p>
-        <div class="ob-sleep-stress-grid">
-          <div class="ob-ss-group">
-            <div class="ob-ss-label">😴 Sleep</div>
-            <div class="ob-option-grid" id="sleep-chips">
-              <div class="ob-option-chip" onclick="selectObChip(this,'sleep-chips','obSleepQuality')" data-val="Good">😌 Good</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'sleep-chips','obSleepQuality')" data-val="Okay">😶 Okay</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'sleep-chips','obSleepQuality')" data-val="Poor">😵 Poor</div>
-            </div>
-          </div>
-          <div class="ob-ss-group">
-            <div class="ob-ss-label">🧘 Stress</div>
-            <div class="ob-option-grid" id="stress-chips">
-              <div class="ob-option-chip" onclick="selectObChip(this,'stress-chips','obStressLevel')" data-val="Low">🌿 Low</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'stress-chips','obStressLevel')" data-val="Medium">⚡ Medium</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'stress-chips','obStressLevel')" data-val="High">🔥 High</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Do you have any of these conditions?</label>
-        <p class="ob-hint-text">Select all that apply.</p>
+        <label>Do you have any of these? <span class="hint">(select all that apply)</span></label>
         <div class="condition-grid" id="condition-grid">
           <div class="cond-chip" onclick="toggleCond(this)" data-val="PCOS">🔬 PCOS</div>
           <div class="cond-chip" onclick="toggleCond(this)" data-val="Thyroid">🦋 Thyroid issues</div>
@@ -197,92 +131,17 @@
           <div class="cond-chip" onclick="toggleCond(this)" data-val="None">✅ None of these</div>
         </div>
       </div>
-    </div>
-
-    <!-- Step 5: What would help most (Goals) -->
-    <div id="ob-step-5" class="ob-step-content">
       <div class="form-group">
-        <label>What would help you most right now?</label>
-        <p class="ob-hint-text">Tell us your vibe, we'll guide you better. 💜</p>
-        <div class="ob-goal-card-grid" id="goal-cards">
-          <div class="ob-goal-card" onclick="toggleObGoal(this)" data-val="Understand irregular periods">
-            <div class="ogc-icon">📅</div>
-            <div class="ogc-text">Understand irregular periods</div>
-          </div>
-          <div class="ob-goal-card" onclick="toggleObGoal(this)" data-val="Feel better during periods">
-            <div class="ogc-icon">🌸</div>
-            <div class="ogc-text">Feel better during periods</div>
-          </div>
-          <div class="ob-goal-card" onclick="toggleObGoal(this)" data-val="Improve mood and energy">
-            <div class="ogc-icon">⚡</div>
-            <div class="ogc-text">Improve mood and energy</div>
-          </div>
-          <div class="ob-goal-card" onclick="toggleObGoal(this)" data-val="Get food and exercise tips">
-            <div class="ogc-icon">🥗</div>
-            <div class="ogc-text">Get food &amp; exercise tips</div>
-          </div>
-          <div class="ob-goal-card" onclick="toggleObGoal(this)" data-val="Know when to see a doctor">
-            <div class="ogc-icon">🩺</div>
-            <div class="ogc-text">Know when to see a doctor</div>
-          </div>
-          <div class="ob-goal-card" onclick="toggleObGoal(this)" data-val="Manage PCOS">
-            <div class="ogc-icon">🔬</div>
-            <div class="ogc-text">Manage PCOS</div>
+        <label>Typical stress level in life</label>
+        <div class="stress-scale">
+          <input type="range" min="1" max="10" value="5" id="ob-stress" oninput="updateStressLabel(this.value)">
+          <div class="stress-labels">
+            <span>Very low</span>
+            <span id="stress-val-label">Moderate (5)</span>
+            <span>Very high</span>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Step 6: Deeper personalisation (optional) -->
-    <div id="ob-step-6" class="ob-step-content">
-      <div class="ob-optional-banner">
-        <div class="oob-icon">✨</div>
-        <div>
-          <div class="oob-title">Almost done! A few optional extras.</div>
-          <div class="oob-sub">Skip any you're not comfortable with — you can always add later.</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>How active are you usually?</label>
-        <div class="ob-option-grid" id="activity-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'activity-chips','obActivityLevel')" data-val="Mostly sitting">🪑 Mostly sitting</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'activity-chips','obActivityLevel')" data-val="A little active">🚶 A little active</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'activity-chips','obActivityLevel')" data-val="Regularly active">🏃 Regularly active</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>How are your food habits?</label>
-        <div class="ob-option-grid" id="food-habit-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-habit-chips','obFoodHabits')" data-val="Mostly home food">🏠 Mostly home food</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-habit-chips','obFoodHabits')" data-val="Mixed">🍱 Mixed</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-habit-chips','obFoodHabits')" data-val="Often skip meals">⏭️ Often skip meals</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-habit-chips','obFoodHabits')" data-val="Eat outside often">🍔 Eat outside often</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>Any food preference?</label>
-        <div class="ob-option-grid" id="food-pref-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-pref-chips','obFoodPref')" data-val="Vegetarian">🌿 Vegetarian</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-pref-chips','obFoodPref')" data-val="Eggetarian">🥚 Eggetarian</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-pref-chips','obFoodPref')" data-val="Non-vegetarian">🍗 Non-vegetarian</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'food-pref-chips','obFoodPref')" data-val="No preference">🤷 No preference</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>What kind of movement do you like?</label>
-        <div class="ob-option-grid" id="movement-chips">
-          <div class="ob-option-chip" onclick="selectObChip(this,'movement-chips','obMovement')" data-val="Walking">🚶 Walking</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'movement-chips','obMovement')" data-val="Yoga/stretching">🧘 Yoga / Stretching</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'movement-chips','obMovement')" data-val="Light workouts">💪 Light workouts</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'movement-chips','obMovement')" data-val="Dance">💃 Dance</div>
-          <div class="ob-option-chip" onclick="selectObChip(this,'movement-chips','obMovement')" data-val="Not sure yet">🤷 Not sure yet</div>
-        </div>
-      </div>
-
       <div class="ob-complete-msg">
         <div class="ob-flower">🌸</div>
         <p>You're all set! Your personalised cycle companion is ready.</p>
@@ -316,7 +175,7 @@
     <div class="sidebar-header">
       <div class="sb-avatar" id="sb-avatar">P</div>
       <div class="sb-name" id="sb-name">User</div>
-      <div class="sb-email" id="sb-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="621711071022070f030b0e4c010d0f">[email&#160;protected]</a></div>
+      <div class="sb-email" id="sb-email">user@email.com</div>
     </div>
     <nav class="sb-nav">
       <a class="sb-link active" onclick="showSection('home')" data-section="home">🏠 Home</a>
@@ -843,7 +702,7 @@
         <div class="profile-card card">
           <div class="profile-avatar-lg" id="profile-avatar-lg">P</div>
           <div class="profile-name-lg" id="profile-name-lg">User Name</div>
-          <div class="profile-email-lg" id="profile-email-lg"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="deabadbbac9ebbb3bfb7b2f0bdb1b3">[email&#160;protected]</a></div>
+          <div class="profile-email-lg" id="profile-email-lg">user@email.com</div>
         </div>
 
         <div class="card">
@@ -858,57 +717,6 @@
           <div class="form-group"><label>Last Period Date</label><input type="date" id="edit-last-period" /></div>
           <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
           <div id="profile-saved-msg" class="success-msg hidden">✅ Profile updated!</div>
-        </div>
-
-        <div class="card">
-          <div class="card-label">🌿 Deeper Personalisation <span class="hint">optional</span></div>
-          <p style="font-size:13px;color:var(--ink-light);margin-bottom:12px;">These help us give more personalised food and activity guidance.</p>
-          <div class="form-group">
-            <label>Height (cm) <span class="hint">optional</span></label>
-            <input type="number" id="edit-height" placeholder="e.g. 160" min="100" max="220" />
-          </div>
-          <div class="form-group">
-            <label>Weight (kg) <span class="hint">optional</span></label>
-            <input type="number" id="edit-weight" placeholder="e.g. 55" min="30" max="150" />
-          </div>
-          <div class="form-group">
-            <label>How active are you usually?</label>
-            <div class="ob-option-grid" id="profile-activity-chips">
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-activity-chips','profileActivityLevel')" data-val="Mostly sitting">🪑 Mostly sitting</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-activity-chips','profileActivityLevel')" data-val="A little active">🚶 A little active</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-activity-chips','profileActivityLevel')" data-val="Regularly active">🏃 Regularly active</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Food preference</label>
-            <div class="ob-option-grid" id="profile-foodpref-chips">
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodpref-chips','profileFoodPref')" data-val="Vegetarian">🌿 Vegetarian</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodpref-chips','profileFoodPref')" data-val="Eggetarian">🥚 Eggetarian</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodpref-chips','profileFoodPref')" data-val="Non-vegetarian">🍗 Non-veg</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodpref-chips','profileFoodPref')" data-val="No preference">🤷 No pref</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Food habits</label>
-            <div class="ob-option-grid" id="profile-foodhabits-chips">
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodhabits-chips','profileFoodHabits')" data-val="Mostly home food">🏠 Home food</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodhabits-chips','profileFoodHabits')" data-val="Mixed">🍱 Mixed</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodhabits-chips','profileFoodHabits')" data-val="Often skip meals">⏭️ Skip meals</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-foodhabits-chips','profileFoodHabits')" data-val="Eat outside often">🍔 Outside often</div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Movement preference</label>
-            <div class="ob-option-grid" id="profile-movement-chips">
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-movement-chips','profileMovement')" data-val="Walking">🚶 Walking</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-movement-chips','profileMovement')" data-val="Yoga/stretching">🧘 Yoga</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-movement-chips','profileMovement')" data-val="Light workouts">💪 Workouts</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-movement-chips','profileMovement')" data-val="Dance">💃 Dance</div>
-              <div class="ob-option-chip" onclick="selectObChip(this,'profile-movement-chips','profileMovement')" data-val="Not sure yet">🤷 Not sure</div>
-            </div>
-          </div>
-          <button class="btn-primary" onclick="saveDeeperProfile()">Save Personalisation</button>
-          <div id="deeper-saved-msg" class="success-msg hidden">✅ Personalisation saved!</div>
         </div>
 
         <div class="card">
@@ -958,4 +766,17 @@
       <button class="lp-option" onclick="selectLangApp('kn')">
         <span class="lp-flag">🌟</span>
         <div class="lp-info"><div class="lp-name">Kannada</div><div class="lp-native">ಕನ್ನಡ</div></div>
-        <span class="lp-check hidden" id="lp-check-kn
+        <span class="lp-check hidden" id="lp-check-kn">✓</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="db.js"></script>
+<script src="translations.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
