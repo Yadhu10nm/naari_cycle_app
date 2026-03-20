@@ -23,13 +23,22 @@ let STATE = {
   calendarDate: new Date(),
   obStep: 1,
   obData: {
-    age: '',
+    ageGroup: '',
     language: 'English',
-    goal: 'Track cycle',
+    goals: [],
     cycleLength: 28,
     periodDuration: 5,
     conditions: [],
-    stressLevel: 5
+    stressLevel: 5,
+    obRegularity: '',
+    obTroubles: [],
+    obPainLevel: '',
+    obSleepQuality: '',
+    obStressLevel: '',
+    obActivityLevel: '',
+    obFoodHabits: '',
+    obFoodPref: '',
+    obMovement: ''
   },
   langMode: 'EN',
   homeMood: '',
@@ -231,10 +240,7 @@ function updateHeaderUI(user) {
 // ── ONBOARDING ────────────────────────────────────────────
 async function obNext() {
   if (STATE.obStep === 1) {
-    const ageEl = document.getElementById('ob-age');
-    const age = ageEl ? parseInt(ageEl.value) : NaN;
-    if (!age || age < 10 || age > 60) { showToast('Please enter a valid age (10–60)'); return; }
-    STATE.obData.age = age;
+    if (!STATE.obData.ageGroup) { showToast('Please select your age group'); return; }
     goToObStep(2);
   } else if (STATE.obStep === 2) {
     const lastPeriodEl = document.getElementById('ob-last-period');
@@ -243,8 +249,16 @@ async function obNext() {
     STATE.obData.lastPeriodDate = lastPeriod;
     goToObStep(3);
   } else if (STATE.obStep === 3) {
-    const stressEl = document.getElementById('ob-stress');
-    STATE.obData.stressLevel = stressEl ? parseInt(stressEl.value) : 5;
+    goToObStep(4);
+  } else if (STATE.obStep === 4) {
+    goToObStep(5);
+  } else if (STATE.obStep === 5) {
+    if (!STATE.obData.goals || STATE.obData.goals.length === 0) {
+      showToast('Please pick at least one goal');
+      return;
+    }
+    goToObStep(6);
+  } else if (STATE.obStep === 6) {
     STATE.obData.completedOnboarding = true;
     try {
       await DB.saveHealthProfile(STATE.currentUser.id, STATE.obData);
@@ -275,10 +289,24 @@ function goToObStep(step) {
   const backBtn = document.getElementById('ob-back-btn');
   const nextBtn = document.getElementById('ob-next-btn');
   if (backBtn) backBtn.style.display = step > 1 ? '' : 'none';
-  if (nextBtn) nextBtn.textContent = step === 3 ? "✓ Let's Start" : 'Continue →';
+  if (nextBtn) nextBtn.textContent = step === 6 ? "✓ Let's Start" : 'Continue →';
 
-  const titles = ['Tell us about yourself', 'Your cycle details', 'Your health profile'];
-  const subs = ['This helps personalise your experience', 'Helps us predict your cycle accurately', 'One last step — you\'re almost there!'];
+  const titles = [
+    "What should we call you? 🌸",
+    "Your cycle details 📅",
+    "What troubles you most? 😮‍💨",
+    "Sleep & stress check 😴",
+    "What would help you most? 💜",
+    "A few more details ✨"
+  ];
+  const subs = [
+    "Your cycle buddy should know your name, right?",
+    "Helps us predict your cycle accurately",
+    "Tell us what usually makes you go uff",
+    "Be honest — we won't judge! 😄",
+    "Tell us your vibe, we'll guide you better",
+    "Optional — skip what you're not comfortable with"
+  ];
   const titleEl = document.getElementById('ob-title');
   const subEl = document.getElementById('ob-sub');
   if (titleEl) titleEl.textContent = titles[step - 1] || '';
@@ -293,6 +321,32 @@ function selectLang(el) {
 function selectGoal(el) {
   document.querySelectorAll('.goal-chip').forEach(c => c.classList.remove('selected'));
   if (el) { el.classList.add('selected'); STATE.obData.goal = el.dataset.val || 'Track cycle'; }
+}
+
+// Single-select chip for onboarding (generic)
+function selectObChip(el, groupId, stateKey) {
+  document.querySelectorAll(`#${groupId} .ob-option-chip`).forEach(c => c.classList.remove('selected'));
+  if (el) {
+    el.classList.add('selected');
+    STATE.obData[stateKey] = el.dataset.val;
+    // also write to profile-level state for profile page chips
+    if (stateKey.startsWith('profile')) STATE[stateKey] = el.dataset.val;
+  }
+}
+
+// Multi-select for troubles
+function toggleMultiChip(el, stateKey) {
+  if (!el) return;
+  el.classList.toggle('selected');
+  const container = el.closest('.condition-grid') || el.parentElement;
+  STATE.obData[stateKey] = [...container.querySelectorAll('.cond-chip.selected')].map(c => c.dataset.val);
+}
+
+// Goal cards (multi-select)
+function toggleObGoal(el) {
+  if (!el) return;
+  el.classList.toggle('selected');
+  STATE.obData.goals = [...document.querySelectorAll('#goal-cards .ob-goal-card.selected')].map(c => c.dataset.val);
 }
 
 function toggleCond(el) {
@@ -1408,11 +1462,13 @@ async function loadProfileInfo() {
   const grid = document.getElementById('profile-info-grid');
   if (grid) {
     const items = [
-      { label: 'Age', val: profile.age ? profile.age + ' years' : '–' },
+      { label: 'Age Group', val: profile.ageGroup || profile.age ? (profile.ageGroup || profile.age + ' yrs') : '–' },
       { label: 'Cycle Length', val: (profile.cycleLength || 28) + ' days' },
       { label: 'Period Duration', val: (profile.periodDuration || 5) + ' days' },
       { label: 'Language', val: profile.language || 'English' },
-      { label: 'Health Goal', val: profile.goal || '–' },
+      { label: 'Period Regularity', val: profile.obRegularity || '–' },
+      { label: 'Pain Level', val: profile.obPainLevel || '–' },
+      { label: 'Goals', val: (profile.goals || [profile.goal]).filter(Boolean).join(', ') || '–' },
       { label: 'Conditions', val: (profile.conditions || ['None']).join(', ') }
     ];
     grid.innerHTML = items.map(i =>
@@ -1423,9 +1479,25 @@ async function loadProfileInfo() {
   const cycleEl = document.getElementById('edit-cycle');
   const durEl = document.getElementById('edit-duration');
   const lastEl = document.getElementById('edit-last-period');
+  const heightEl = document.getElementById('edit-height');
+  const weightEl = document.getElementById('edit-weight');
   if (cycleEl) cycleEl.value = profile.cycleLength || 28;
   if (durEl) durEl.value = profile.periodDuration || 5;
   if (lastEl) lastEl.value = profile.lastPeriodDate || '';
+  if (heightEl && profile.height) heightEl.value = profile.height;
+  if (weightEl && profile.weight) weightEl.value = profile.weight;
+
+  // Pre-select deeper profile chips
+  const preSelectChip = (gridId, val) => {
+    if (!val) return;
+    document.querySelectorAll(`#${gridId} .ob-option-chip`).forEach(c => {
+      c.classList.toggle('selected', c.dataset.val === val);
+    });
+  };
+  preSelectChip('profile-activity-chips', profile.activityLevel || profile.obActivityLevel);
+  preSelectChip('profile-foodpref-chips', profile.foodPref || profile.obFoodPref);
+  preSelectChip('profile-foodhabits-chips', profile.foodHabits || profile.obFoodHabits);
+  preSelectChip('profile-movement-chips', profile.movement || profile.obMovement);
 }
 
 async function saveProfile() {
@@ -1463,7 +1535,45 @@ async function saveProfile() {
   showToast('✅ Profile updated!');
 }
 
-async function exportData() {
+async function saveDeeperProfile() {
+  if (!STATE.currentUser) return;
+  let profile = null;
+  try { profile = await DB.getHealthProfile(STATE.currentUser.id) || {}; } catch (e) { profile = {}; }
+
+  const heightEl = document.getElementById('edit-height');
+  const weightEl = document.getElementById('edit-weight');
+
+  const getChipVal = (id) => {
+    const sel = document.querySelector(`#${id} .ob-option-chip.selected`);
+    return sel ? sel.dataset.val : (profile[id.replace('profile-','').replace('-chips','')] || '');
+  };
+
+  const updated = {
+    ...profile,
+    height: parseInt(heightEl?.value) || profile.height || '',
+    weight: parseInt(weightEl?.value) || profile.weight || '',
+    activityLevel: getChipVal('profile-activity-chips') || profile.activityLevel || '',
+    foodPref: getChipVal('profile-foodpref-chips') || profile.foodPref || '',
+    foodHabits: getChipVal('profile-foodhabits-chips') || profile.foodHabits || '',
+    movement: getChipVal('profile-movement-chips') || profile.movement || ''
+  };
+
+  try {
+    await DB.saveHealthProfile(STATE.currentUser.id, updated);
+  } catch (e) {
+    showToast('⚠️ Could not save personalisation.');
+    return;
+  }
+
+  const savedMsg = document.getElementById('deeper-saved-msg');
+  if (savedMsg) {
+    savedMsg.classList.remove('hidden');
+    setTimeout(() => savedMsg.classList.add('hidden'), 3000);
+  }
+  showToast('✅ Personalisation saved!');
+}
+
+
   let csv = '';
   try {
     csv = await DB.exportToCSV(STATE.currentUser.id) || '';
