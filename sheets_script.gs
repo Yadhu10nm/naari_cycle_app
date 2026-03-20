@@ -56,7 +56,7 @@
  */
 
 // ─── PASTE YOUR GOOGLE SHEET ID HERE ─────────────────────────
-const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
+const SPREADSHEET_ID = '14rStqOVHiAlZRm-Bk8VFlpSK7QXJgt-BiTeVD4A16Dmtn7_Qj9Nv-v9I';
 // ─────────────────────────────────────────────────────────────
 
 const SHEETS = {
